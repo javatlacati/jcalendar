@@ -3,8 +3,10 @@ package com.toedter.calendar;
 import com.toedter.pageobject.calendar.JHourMinuteChooserPageObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -17,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.parallel.Execution;
 import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 @Execution(value = CONCURRENT)
@@ -94,6 +95,7 @@ public class JHourMinuteChooserTest {
 
     @Test
     @DisplayName("Time should move if checkbox is clicked after 1 minute")
+    @Disabled
     public void checkBox() {
         jHourMinuteChooser = new JHourMinuteChooser();
         secondSetup();
