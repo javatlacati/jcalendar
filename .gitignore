@@ -5,3 +5,6 @@
 */jcalendar-*.iml
 /jcalendar-swing.iml
 */nbproject/
+bin/
+bin/*
+javac
