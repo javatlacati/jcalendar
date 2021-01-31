@@ -138,7 +138,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
      * Installs the JGoodies Look & Feels, if available, in classpath.
      */
     public final void initializeLookAndFeels() {
-        // if in classpath thry to load JGoodies Plastic Look & Feel
+        // if in classpath try to load JGoodies Plastic Look & Feel
         try {
             LookAndFeelInfo[] lnfs = UIManager.getInstalledLookAndFeels();
             boolean found = false;
