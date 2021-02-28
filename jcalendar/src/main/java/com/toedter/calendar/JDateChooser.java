@@ -262,40 +262,7 @@ public class JDateChooser extends JPanel implements ActionListener,
         }
         ;
 
-        // Corrects a problem that occured when the JMonthChooser's combobox is
-        // displayed, and a click outside the popup does not close it.
-        // The following idea was originally provided by forum user
-        // podiatanapraia:
-        ChangeListener changeListener2 = new ChangeListener() {
-            boolean hasListened;
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (hasListened) {
-                    hasListened = false;
-                    return;
-                }
-                if (popup.isVisible()
-                    && JDateChooser.this.jcalendar.monthChooser
-                    .getComboBox().hasFocus()) {
-                    MenuElement[] me = MenuSelectionManager.defaultManager()
-                    .getSelectedPath();
-                    MenuElement[] newMe = new MenuElement[me.length + 1];
-                    newMe[0] = popup;
-                    for (int i = 0; i < me.length; i++) {
-                        newMe[i + 1] = me[i];
-                    }
-                    hasListened = true;
-                    MenuSelectionManager.defaultManager()
-                    .setSelectedPath(newMe);
-                }
-            }
-        };
-        // Thanks to forum member Kris Kemper for the memory leak fix (and below also)
-        changeListener = new WeakChangeListenerProxy(changeListener2);
-
-        MenuSelectionManager.defaultManager().addChangeListener(changeListener);
-        // end of code provided by forum user podiatanapraia
+        addChangeListener();
 
         setName("JDateChooser"); // NOI18N
         setLayout(new BorderLayout());
@@ -742,6 +709,42 @@ public class JDateChooser extends JPanel implements ActionListener,
         // is not valid. This would be a mis-configuration of the datechooser
         // so we have to choose one over the other
         return d.equals(newValue);
+    }
+
+    private void addChangeListener() {
+        // Corrects a problem that occured when the JMonthChooser's combobox is
+        // displayed, and a click outside the popup does not close it.
+        // The following idea was originally provided by forum user
+        // podiatanapraia:
+        ChangeListener changeListener2 = new ChangeListener() {
+            boolean hasListened;
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (hasListened) {
+                    hasListened = false;
+                    return;
+                }
+                if (popup.isVisible()
+                        && JDateChooser.this.jcalendar.monthChooser
+                                .getComboBox().hasFocus()) {
+                    MenuElement[] me = MenuSelectionManager.defaultManager()
+                            .getSelectedPath();
+                    MenuElement[] newMe = new MenuElement[me.length + 1];
+                    newMe[0] = popup;
+                    System.arraycopy(me, 0, newMe, 1, me.length);
+                    hasListened = true;
+                    MenuSelectionManager.defaultManager()
+                            .setSelectedPath(newMe);
+                }
+            }
+        };
+// Thanks to forum member Kris Kemper for the memory leak fix (and below also)
+        changeListener = new WeakChangeListenerProxy(changeListener2);
+
+        MenuSelectionManager.defaultManager().addChangeListener(changeListener);
+// end of code provided by forum user podiatanapraia
+
     }
 
     // Pass on this component instead of the JCalendar
