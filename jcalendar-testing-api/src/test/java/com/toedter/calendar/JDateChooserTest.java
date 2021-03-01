@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -45,6 +46,7 @@ public class JDateChooserTest {
     @DisplayName("Date should be empty for the component if no parameters are specified")
     public void defaultDate() {
         jDateChooser = new JDateChooser();
+        jDateChooser.setLocale(Locale.US);
         // JDateChooser dateChooser = new JDateChooser(null, new Date(), null,
         // null);
         // dateChooser.setLocale(new Locale("de"));
@@ -65,6 +67,7 @@ public class JDateChooserTest {
     @DisplayName("It should change the color of the textfield to black when entered a valid value")
     public void redTextForNonNumbers() {
         jDateChooser = new JDateChooser();
+        jDateChooser.setLocale(Locale.US);
         secondSetup();
         assertEquals(System.getProperty("os.name", "generic").toLowerCase().contains("mac") ? Color.BLACK : DEFAULT_COLOR, pageObject.getTextFieldForegroundColor());
         pageObject.setTextFieldContent("hello");
@@ -77,6 +80,7 @@ public class JDateChooserTest {
     @DisplayName("It should change the color of the textfield to red when entered an invalid value")
     public void blackTextForNumbers() {
         jDateChooser = new JDateChooser();
+        jDateChooser.setLocale(Locale.US);
         secondSetup();
         assertEquals(System.getProperty("os.name").contains("Mac") ? Color.BLACK : DEFAULT_COLOR, pageObject.getTextFieldForegroundColor());
         pageObject.setTextFieldContent("Jan 5, 2020");

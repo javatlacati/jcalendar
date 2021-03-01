@@ -193,7 +193,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
     }
 
     private void initialize(Date date) {
-        calendar = Calendar.getInstance();
+        calendar = getInstance();
         
         // Set the initialized flag before setting the calendar. This will
         // cause the other components to be updated properly.
