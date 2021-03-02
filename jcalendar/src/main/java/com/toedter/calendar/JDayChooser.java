@@ -18,10 +18,15 @@
  */
 package com.toedter.calendar;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -29,8 +34,10 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -88,6 +95,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     private boolean alwaysFireDayProperty;
     protected boolean initialized;
     protected int maxDayCharacters;
+    
+    protected List<IDateEvaluator> dateEvaluators;
+
+    protected MinMaxDateEvaluator minMaxDateEvaluator;
+    
     protected boolean decorationBordersVisible;
     protected boolean dayBordersVisible;
     protected boolean decorationBackgroundVisible = true;
@@ -144,6 +156,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        initializeDateEvaluators();
         weekPanel = new JPanel();
         fillWeekPanel();
         dayPanel = new JPanel();
@@ -248,7 +261,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             firstDay += 7;
         }
 
-        int i = hideDaysBeforeFirstDay(firstDay);
+        hideDaysBeforeFirstDay(firstDay);
 
         tmpCalendar.add(Calendar.MONTH, 1);
 
@@ -260,7 +273,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         Color foregroundColor = getForeground();
 
         while (aDay.before(firstDayInNextMonth)) {
-            JButton b = days[i + n + 7];
+            JButton b = days[firstDay + n + 7];
             b.setText(Integer.toString(n + 1));
             b.setVisible(true);
 
@@ -284,15 +297,19 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             if (tmpCalendar.before(minCal) || tmpCalendar.after(maxCal)) {
                 b.setEnabled(false);
             } else {
+                
                 if (dateVerifier != null) {
-                    b.setEnabled(dateVerifier.valid(this, tmpCalendar) && isEnabled());
+                    b.setEnabled(dateVerifier.valid(tmpCalendar) && isEnabled());
                 } else {
                     b.setEnabled(isEnabled());
                 }
+                
             }
             
+            //            days[i + n + 7].setEnabled(true);
+            
 //            Iterator iterator = dateEvaluators.iterator();
-//            days[i + n + 7].setEnabled(true);
+
 //            while (iterator.hasNext()) {
 //                IDateEvaluator dateEvaluator = (IDateEvaluator) iterator.next();
 //                if (dateEvaluator.isSpecial(day)) {
@@ -318,22 +335,20 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             aDay = tmpCalendar.getTime();
         }
 
-        hideInvalidDays(n, i);
+        hideInvalidDays(n, firstDay);
 
         drawWeeks();
     }
 
-    private int hideDaysBeforeFirstDay(int firstDay) {
-        int i;
-        for (i = 0; i < firstDay; i++) {
-            days[i + 7].setVisible(false);
-            days[i + 7].setText("");
+    private void hideDaysBeforeFirstDay(int firstDay) {
+        for (int currentDay = 0; currentDay < firstDay; currentDay++) {
+            days[currentDay + 7].setVisible(false);
+            days[currentDay + 7].setText("");
         }
-        return i;
     }
 
-    private void hideInvalidDays(int n, int i) {
-        for (int k = n + i + 7; k < 49; k++) {
+    private void hideInvalidDays(int n, int firstDay) {
+        for (int k = n + firstDay + 7; k < 49; k++) {
             days[k].setVisible(false);
             days[k].setText("");
         }
@@ -1065,5 +1080,19 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         drawDayNames();
         drawDays();
         invalidate();
+    }
+    
+    public void addDateEvaluator(IDateEvaluator dateEvaluator) {
+        dateEvaluators.add(dateEvaluator);
+    }
+
+    public void removeDateEvaluator(IDateEvaluator dateEvaluator) {
+        dateEvaluators.remove(dateEvaluator);
+    }
+
+    private void initializeDateEvaluators() {
+        dateEvaluators = new ArrayList<>(1);
+        minMaxDateEvaluator = new MinMaxDateEvaluator();
+        addDateEvaluator(minMaxDateEvaluator);
     }
 }

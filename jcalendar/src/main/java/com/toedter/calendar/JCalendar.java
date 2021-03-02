@@ -885,8 +885,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         }
 
         @Override
-        public boolean valid(JComponent source, Calendar date) {
-            return verifier.valid(JCalendar.this, date);
+        public boolean valid(Calendar date) {
+            return verifier.valid(date);
         }
     }
 }

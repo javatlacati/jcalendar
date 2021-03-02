@@ -37,10 +37,8 @@ public interface DateVerifier {
   /**
    * Returns <code>true</code> if the given date is valid, <code>false</code>
    * if it is not.
-   * @param source the component, either a {@link JDayChooser}, a {@link JCalendar}
-   * or a {@link JDateChooser}.
    * @param date the date
    * @return whether valid
    */
-  public boolean valid(JComponent source, Calendar date);
+  public boolean valid(Calendar date);
 }

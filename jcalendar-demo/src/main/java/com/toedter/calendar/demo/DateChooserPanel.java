@@ -271,7 +271,7 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
     static public class TestDateVerifier implements DateVerifier {
 
         @Override
-        public boolean valid(JComponent source, Calendar date) {
+        public boolean valid(Calendar date) {
             int year = date.get(Calendar.YEAR);
             if (year < 100) {
                 if (year < 50) {
