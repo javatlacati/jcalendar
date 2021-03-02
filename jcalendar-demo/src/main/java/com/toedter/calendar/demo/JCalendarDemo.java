@@ -79,6 +79,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A demonstration JFrame for the JCalendar bean. The demo can be started as
@@ -86,11 +88,13 @@ import java.util.Date;
  *
  * @author Kai Toedter
  * @version $LastChangedRevision: 103 $
- * @version $LastChangedDate: 2006-06-04 14:57:02 +0200 (So, 04 Jun 2006) $
+ * @vubersion $LastChangedDate: 2006-06-04 14:57:02 +0200 (So, 04 Jun 2006) $
  */
 public class JCalendarDemo extends JFrame implements PropertyChangeListener {
 
     private static final long serialVersionUID = 6739986412544494316L;
+
+    private static Logger logger = Logger.getLogger(JCalendarDemo.class.getName());
 
     private JComponent[] beans;
     //private JPanel propertyPanel;
@@ -101,7 +105,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JTitlePanel componentTitlePanel;
     private JMenuBar menuBar;
-    JPanel propertyPanel;
+    private JPanel propertyPanel;
     private JSplitPane splitPane;
     private JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
@@ -157,7 +161,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
-                e.printStackTrace();
+                logger.log(Level.INFO, "Problem loading look and feel", e);
             }
         }
     }
@@ -201,6 +205,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
         JMenuItem aboutItem = helpMenu.add(new AboutAction(this));
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new BorderLayout());
 
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -232,7 +237,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
 
-        aboutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
+        aboutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
         aboutItem.setMnemonic('A');
         helpMenu.add(aboutItem);
 
@@ -276,12 +281,11 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
             componentPanel.invalidate();
             componentPanel.repaint();
         } catch (IntrospectionException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Problem loading graphic component", e);
         }
     }
 
     private void installBeanByType(PropertyDescriptor[] propertyDescriptors, JComponent bean, GridBagLayout gridbag) {
-        int count = 0;
 
         String[] types = new String[]{"class java.util.Locale", "boolean", "interface com.toedter.calendar.DateVerifier",
             "int", "class java.awt.Color", "class java.util.Date", "class java.lang.String"};
@@ -299,170 +303,31 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
                             || "interface com.toedter.calendar.DateVerifier".equals(propertyType)))) {
                         switch (propertyType) {
                             case "boolean": {
-                                boolean isSelected = false;
-                                try {
-                                    isSelected = ((Boolean) readMethod.invoke(bean, null));
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                final JCheckBox checkBox = new JCheckBox("", isSelected);
-                                checkBox.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent event) {
-                                        try {
-                                            if (checkBox.isSelected()) {
-                                                writeMethod.invoke(currentBean,
-                                                        Boolean.TRUE);
-                                            } else {
-                                                writeMethod.invoke(currentBean,
-                                                        Boolean.FALSE);
-                                            }
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                addProperty(propertyDescriptor1, checkBox, gridbag);
-                                count += 1;
+                                setBooleanProperty(readMethod, bean, writeMethod, currentBean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "int": {
-                                JSpinField spinField = new JSpinField();
-                                spinField.addPropertyChangeListener(new PropertyChangeListener() {
-                                    @Override
-                                    public void propertyChange(PropertyChangeEvent evt) {
-                                        try {
-                                            if (evt.getPropertyName().equals("value")) {
-                                                writeMethod.invoke(currentBean, evt
-                                                        .getNewValue());
-                                            }
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                        }
-                                    }
-                                });
-                                try {
-                                    Integer integerObj = ((Integer) readMethod.invoke(bean, null));
-                                    spinField.setValue(integerObj);
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                addProperty(propertyDescriptor1, spinField, gridbag);
-                                count += 1;
+                                setIntProperty(writeMethod, currentBean, readMethod, bean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "class java.lang.String": {
-                                String string = "";
-                                try {
-                                    string = ((String) readMethod.invoke(bean, null));
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                JTextField textField = new JTextField(string);
-                                ActionListener actionListener = new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        try {
-                                            writeMethod.invoke(currentBean, e
-                                                    .getActionCommand());
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                                        }
-                                    }
-                                };
-                                textField.addActionListener(actionListener);
-                                addProperty(propertyDescriptor1, textField, gridbag);
-                                count += 1;
+                                SetStringProperty(readMethod, bean, writeMethod, currentBean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "class java.util.Locale": {
-
-                                JLocaleChooser localeChooser = new JLocaleChooser(bean);
-                                localeChooser.setPreferredSize(new Dimension(200, localeChooser
-                                        .getPreferredSize().height));
-                                addProperty(propertyDescriptor1, localeChooser, gridbag);
-                                count += 1;
+                                setLocaleProperty(bean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "interface com.toedter.calendar.DateVerifier": {
-                                boolean isSelected = false;
-                                try {
-                                    isSelected = readMethod.invoke(bean, null) != null;
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                final JCheckBox checkBox = new JCheckBox("", isSelected);
-                                checkBox.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent event) {
-                                        try {
-                                            if (checkBox.isSelected()) {
-                                                writeMethod.invoke(currentBean,
-                                                        dateVerifier);
-                                            } else {
-                                                writeMethod.invoke(currentBean,
-                                                        new Object[]{null});
-                                            }
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                addProperty(propertyDescriptor1, checkBox, gridbag);
-                                count += 1;
+                                setDateVerifierProperty(readMethod, bean, writeMethod, currentBean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "class java.util.Date": {
-                                Date date = null;
-                                try {
-                                    date = ((Date) readMethod.invoke(bean, null));
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                JDateChooser dateChooser = new JDateChooser(date);
-                                dateChooser.addPropertyChangeListener(new PropertyChangeListener() {
-                                    @Override
-                                    public void propertyChange(PropertyChangeEvent evt) {
-                                        try {
-                                            if (evt.getPropertyName().equals("date")) {
-                                                writeMethod.invoke(currentBean, evt
-                                                        .getNewValue());
-                                            }
-                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                        }
-                                    }
-                                });
-                                addProperty(propertyDescriptor1, dateChooser, gridbag);
-                                count += 1;
+                                setDateProperty(readMethod, bean, writeMethod, currentBean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             case "class java.awt.Color": {
-                                final JButton button = new JButton();
-                                try {
-                                    final Color colorObj = ((Color) readMethod.invoke(bean, null));
-                                    button.setText("...");
-                                    button.setBackground(colorObj);
-
-                                    ActionListener actionListener = new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(ActionEvent e) {
-                                            Color newColor = JColorChooser.showDialog(
-                                                    JCalendarDemo.this, "Choose Color", colorObj);
-                                            button.setBackground(newColor);
-
-                                            try {
-                                                writeMethod.invoke(currentBean,
-                                                        newColor);
-                                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-                                                e1.printStackTrace();
-                                            }
-                                        }
-                                    };
-
-                                    button.addActionListener(actionListener);
-                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                addProperty(propertyDescriptor1, button, gridbag);
-                                count += 1;
+                                setColorProperty(readMethod, bean, writeMethod, currentBean, propertyDescriptor1, gridbag);
                                 break;
                             }
                             default:
@@ -472,6 +337,168 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
                 }
             }
         }
+    }
+
+    private void setBooleanProperty(final Method readMethod, JComponent bean, final Method writeMethod, final JComponent currentBean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        boolean isSelected = false;
+        try {
+            isSelected = ((Boolean) readMethod.invoke(bean, null));
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem getting value of checkbox", e);
+        }
+        final JCheckBox checkBox = new JCheckBox("", isSelected);
+        checkBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    if (checkBox.isSelected()) {
+                        writeMethod.invoke(currentBean,
+                                Boolean.TRUE);
+                    } else {
+                        writeMethod.invoke(currentBean,
+                                Boolean.FALSE);
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    logger.log(Level.SEVERE, "Problem setting value of checkbox", e);
+                }
+            }
+        });
+        addProperty(propertyDescriptor1, checkBox, gridbag);
+    }
+
+    private void setIntProperty(final Method writeMethod, final JComponent currentBean, final Method readMethod, JComponent bean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        JSpinField spinField = new JSpinField();
+        spinField.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                try {
+                    if (evt.getPropertyName().equals("value")) {
+                        writeMethod.invoke(currentBean, evt
+                                .getNewValue());
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    logger.log(Level.SEVERE, "Problem writing property of type int", e);
+                }
+            }
+        });
+        try {
+            Integer integerObj = ((Integer) readMethod.invoke(bean, null));
+            spinField.setValue(integerObj);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem reading property of type Integer", e);
+        }
+        addProperty(propertyDescriptor1, spinField, gridbag);
+    }
+
+    private void SetStringProperty(final Method readMethod, JComponent bean, final Method writeMethod, final JComponent currentBean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        String string = "";
+        try {
+            string = ((String) readMethod.invoke(bean, null));
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem reading property of type String", e);
+        }
+        JTextField textField = new JTextField(string);
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writeMethod.invoke(currentBean, e
+                            .getActionCommand());
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                }
+            }
+        };
+        textField.addActionListener(actionListener);
+        addProperty(propertyDescriptor1, textField, gridbag);
+        return;
+    }
+
+    private void setDateVerifierProperty(final Method readMethod, JComponent bean, final Method writeMethod, final JComponent currentBean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        boolean isSelected = false;
+        try {
+            isSelected = readMethod.invoke(bean, null) != null;
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem reading JComponent bean", e);
+        }
+        final JCheckBox checkBox = new JCheckBox("", isSelected);
+        checkBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    if (checkBox.isSelected()) {
+                        writeMethod.invoke(currentBean,
+                                dateVerifier);
+                    } else {
+                        writeMethod.invoke(currentBean,
+                                new Object[]{null});
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    logger.log(Level.SEVERE, "Problem setting date verifier", e);
+                }
+            }
+        });
+        addProperty(propertyDescriptor1, checkBox, gridbag);
+    }
+
+    private void setColorProperty(final Method readMethod, JComponent bean, final Method writeMethod, final JComponent currentBean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        final JButton button = new JButton();
+        try {
+            final Color colorObj = ((Color) readMethod.invoke(bean, null));
+            button.setText("...");
+            button.setBackground(colorObj);
+            
+            ActionListener actionListener = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Color newColor = JColorChooser.showDialog(
+                            JCalendarDemo.this, "Choose Color", colorObj);
+                    button.setBackground(newColor);
+                    
+                    try {
+                        writeMethod.invoke(currentBean,
+                                newColor);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+                        logger.log(Level.SEVERE, "Problem setting color", e);
+                    }
+                }
+            };
+            
+            button.addActionListener(actionListener);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem reading color", e);
+        }
+        addProperty(propertyDescriptor1, button, gridbag);
+    }
+
+    private void setDateProperty(final Method readMethod, JComponent bean, final Method writeMethod, final JComponent currentBean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        Date date = null;
+        try {
+            date = ((Date) readMethod.invoke(bean, null));
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            logger.log(Level.SEVERE, "Problem reading property of type Date", e);
+        }
+        JDateChooser dateChooser = new JDateChooser(date);
+        dateChooser.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                try {
+                    if (evt.getPropertyName().equals("date")) {
+                        writeMethod.invoke(currentBean, evt
+                                .getNewValue());
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    logger.log(Level.SEVERE, "Problem writing property of type Date", e);
+                }
+            }
+        });
+        addProperty(propertyDescriptor1, dateChooser, gridbag);
+    }
+
+    private void setLocaleProperty(JComponent bean, PropertyDescriptor propertyDescriptor1, GridBagLayout gridbag) {
+        JLocaleChooser localeChooser = new JLocaleChooser(bean);
+        localeChooser.setPreferredSize(new Dimension(200, localeChooser
+                .getPreferredSize().height));
+        addProperty(propertyDescriptor1, localeChooser, gridbag);
     }
 
     private void addProperty(PropertyDescriptor propertyDescriptor, JComponent editor,
@@ -576,8 +603,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
                 icon = new ImageIcon(iconURL);
                 menuItem = new JMenuItem(bean1.getName(), icon);
             } catch (Exception e) {
-                System.err.println("JCalendarDemo.createMenuBar(): " + e + " for URL: " + iconURL);
-                e.printStackTrace();
+                logger.log(Level.SEVERE, "JCalendarDemo.createMenuBar() for URL: " + iconURL, e);
                 menuItem = new JMenuItem(bean1.getName());
             }
             componentsMenu.add(menuItem);
@@ -635,8 +661,7 @@ public class JCalendarDemo extends JFrame implements PropertyChangeListener {
                                     divider.setBorder(null);
                                 }
                             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
-                                System.err.println("Unable to set UI " + e.getMessage());
-                                e.printStackTrace();
+                                logger.log(Level.SEVERE, "Unable to set UI ", e);
                             }
                         }
                     }

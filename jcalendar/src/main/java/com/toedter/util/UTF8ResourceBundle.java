@@ -44,7 +44,7 @@ public abstract class UTF8ResourceBundle {
 
     private static class UTF8PropertyResourceBundle extends ResourceBundle {
 
-        PropertyResourceBundle propertyResourceBundle;
+        private PropertyResourceBundle propertyResourceBundle;
 
         private UTF8PropertyResourceBundle(PropertyResourceBundle bundle) {
             this.propertyResourceBundle = bundle;

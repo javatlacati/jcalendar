@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -25,7 +26,7 @@ public class JHourMinuteChooserWithCurrentTimeTest {
     private JHourMinuteChooserWithCurrentTime jHourMinuteChooserWithCurrentTime;
     private JFrame frame;
     private JHourMinuteChooserWithCurrentTimePageObject pageObject;
-    private static final SimpleDateFormat MERIDIAN_FORMAT = new SimpleDateFormat("a");
+    private static final SimpleDateFormat MERIDIAN_FORMAT = new SimpleDateFormat("a", Locale.US);
 
     @BeforeEach
     public void setUp() throws Exception {
