@@ -54,7 +54,7 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
      * Creates new form DateChooserPanel
      */
     public DateChooserPanel() {
-        
+
         components = new JComponent[5];
         components[0] = new JDateChooser();
         components[1] = new JDateChooser(new Date());
@@ -271,7 +271,7 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
     static public class TestDateVerifier implements DateVerifier {
 
         @Override
-        public boolean valid(Calendar date) {
+        public boolean isInvalid(Calendar date) {
             int year = date.get(Calendar.YEAR);
             if (year < 100) {
                 if (year < 50) {
@@ -284,10 +284,9 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
             }
 
             if (date.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                return false;
+                return true;
             }
-            return (date.get(Calendar.DAY_OF_MONTH) % 2) == 0;
-
+            return (date.get(Calendar.DAY_OF_MONTH) % 2) != 0;
         }
 
     }

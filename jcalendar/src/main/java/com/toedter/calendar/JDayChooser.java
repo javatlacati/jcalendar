@@ -18,15 +18,15 @@
  */
 package com.toedter.calendar;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -95,11 +95,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     private boolean alwaysFireDayProperty;
     protected boolean initialized;
     protected int maxDayCharacters;
-    
+
     protected List<IDateEvaluator> dateEvaluators;
 
     protected MinMaxDateEvaluator minMaxDateEvaluator;
-    
+
     protected boolean decorationBordersVisible;
     protected boolean dayBordersVisible;
     protected boolean decorationBackgroundVisible = true;
@@ -297,17 +297,17 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             if (tmpCalendar.before(minCal) || tmpCalendar.after(maxCal)) {
                 b.setEnabled(false);
             } else {
-                
+
                 if (dateVerifier != null) {
-                    b.setEnabled(dateVerifier.valid(tmpCalendar) && isEnabled());
+                    b.setEnabled(!dateVerifier.isInvalid(tmpCalendar) && isEnabled());
                 } else {
                     b.setEnabled(isEnabled());
                 }
-                
+
             }
-            
+
             //            days[i + n + 7].setEnabled(true);
-            
+
 //            Iterator iterator = dateEvaluators.iterator();
 
 //            while (iterator.hasNext()) {
@@ -964,7 +964,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     public void setSelectableDateRange(Date min, Date max) {
 //        minMaxDateEvaluator.setMaxSelectableDate(max);
 //        minMaxDateEvaluator.setMinSelectableDate(min);
-        
+
         minSelectableDate = min == null ? defaultMinSelectableDate : min;
         maxSelectableDate = max == null ? defaultMaxSelectableDate : max;
         if (maxSelectableDate.before(minSelectableDate)) {
@@ -1081,7 +1081,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         drawDays();
         invalidate();
     }
-    
+
     public void addDateEvaluator(IDateEvaluator dateEvaluator) {
         dateEvaluators.add(dateEvaluator);
     }

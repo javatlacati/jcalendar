@@ -58,15 +58,15 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * indicates if weeks of year shall be visible
      */
     protected boolean weekOfYearVisible = true;
-    
+
     private boolean isTodayButtonVisible;
     private boolean isNullDateButtonVisible;
-    
+
     private static final String DEFAULT_TODAY_BUTTON_TEXT = "Today";
     private static final String DEFAULT_NULL_DATE_BUTTON_TEXT = "No Date";
     private String todayButtonText;
     private String nullDateButtonText;
-    
+
     private boolean monthSpinner;
 
     /**
@@ -193,13 +193,13 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 
     private void initialize(Date date) {
         calendar = Calendar.getInstance();
-        
+
         // Set the initialized flag before setting the calendar. This will
         // cause the other components to be updated properly.
         if (date != null) {
             calendar.setTime(date);
         }
-        
+
         initialized = true;
 
         setCalendar(calendar);
@@ -774,7 +774,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
     public void setMaxDayCharacters(int maxDayCharacters) {
         dayChooser.setMaxDayCharacters(maxDayCharacters);
     }
-    
+
     /**
      * Sets the Today button visible.
      *
@@ -873,7 +873,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         }
         relayoutSpecialButtonPanel();
     }
-    
+
     // Pass on this component instead of the JDayChooser
     private class DelegatingDateVerifier implements DateVerifier {
 
@@ -884,8 +884,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         }
 
         @Override
-        public boolean valid(Calendar date) {
-            return verifier.valid(date);
+        public boolean isInvalid(Calendar date) {
+            return verifier.isInvalid(date);
         }
     }
 }

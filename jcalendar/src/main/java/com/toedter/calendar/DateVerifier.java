@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2019 Ruslan Lopez Carro.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,25 +20,23 @@ package com.toedter.calendar;
 
 import java.util.Calendar;
 
-import javax.swing.JComponent;
-
 /**
  * Determine whether a date is valid. When a DateVerifier is established
  * the implementation may indicate whether a given date is permitted
  * as an allowed value.
- * 
+ *
  * @author Tom Sanders
  * @version $LastChangedRevision: $
  * @version $LastChangedDate: $
  *
  */
 public interface DateVerifier {
-  
+
   /**
    * Returns <code>true</code> if the given date is valid, <code>false</code>
    * if it is not.
    * @param date the date
    * @return whether valid
    */
-  public boolean valid(Calendar date);
+  boolean isInvalid(Calendar date);
 }

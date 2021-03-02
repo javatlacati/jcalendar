@@ -640,7 +640,7 @@ public class JDateChooser extends JPanel implements ActionListener,
         MenuSelectionManager.defaultManager().removeChangeListener(changeListener);
         changeListener = null;
     }
-    
+
     @Override
     public boolean requestFocusInWindow() {
         if (dateEditor instanceof JComponent) {
@@ -677,7 +677,7 @@ public class JDateChooser extends JPanel implements ActionListener,
 
         calendar.setTime(newValue);
         long was = newValue.getTime();
-        if (v.valid(calendar)) {
+        if (!v.isInvalid(calendar)) {
             if (calendar.getTimeInMillis() != was) {
                 dateEditor.setDate(new Date(calendar.getTimeInMillis()));
             }
@@ -699,7 +699,7 @@ public class JDateChooser extends JPanel implements ActionListener,
             calendar.add(Calendar.DAY_OF_YEAR, direction);
             d.setTime(calendar.getTimeInMillis());
         } while (((direction == 1) ? d.before(limit) : d.after(limit))
-                && !v.valid(calendar));
+                && v.isInvalid(calendar));
         if ((direction == 1) ? d.after(limit) : d.before(limit)) {
             d.setTime(limit.getTime());
         }
@@ -757,8 +757,8 @@ public class JDateChooser extends JPanel implements ActionListener,
         }
 
         @Override
-        public boolean valid(Calendar date) {
-            return verifier.valid(date);
+        public boolean isInvalid(Calendar date) {
+            return verifier.isInvalid(date);
         }
     }
 }
