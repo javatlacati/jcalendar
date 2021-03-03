@@ -30,7 +30,7 @@ import java.util.Date;
  * @version $LastChangedDate: 2011-06-05 07:06:03 +0200 (So, 05 Jun 2011) $
  *
  */
-public interface IDateEvaluator {
+public interface IDateEvaluator extends DateVerifier {
 
     /**
      * Checks if a date is a special date (might have different colors and
@@ -62,6 +62,7 @@ public interface IDateEvaluator {
      * @param date the date to check
      * @return true, if the date is invalid and cannot be selected
      */
+    @Override
     boolean isInvalid(Date date);
 
     /**

@@ -268,10 +268,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         Date firstDayInNextMonth = tmpCalendar.getTime();
         tmpCalendar.add(Calendar.MONTH, -1);
 
+        Color foregroundColor = getForeground();
+        
         Date aDay = tmpCalendar.getTime();
         int n = 0;
-        Color foregroundColor = getForeground();
-
         while (aDay.before(firstDayInNextMonth)) {
             JButton b = days[firstDay + n + 7];
             b.setText(Integer.toString(n + 1));
@@ -299,7 +299,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             } else {
 
                 if (dateVerifier != null) {
-                    b.setEnabled(!dateVerifier.isInvalid(tmpCalendar) && isEnabled());
+                    b.setEnabled(!dateVerifier.isInvalid(new Date(tmpCalendar.getTimeInMillis())) && isEnabled());
                 } else {
                     b.setEnabled(isEnabled());
                 }

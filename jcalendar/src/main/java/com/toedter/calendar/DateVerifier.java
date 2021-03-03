@@ -19,6 +19,7 @@
 package com.toedter.calendar;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Determine whether a date is valid. When a DateVerifier is established
@@ -38,5 +39,5 @@ public interface DateVerifier {
    * @param date the date
    * @return whether valid
    */
-  boolean isInvalid(Calendar date);
+  boolean isInvalid(Date date);
 }

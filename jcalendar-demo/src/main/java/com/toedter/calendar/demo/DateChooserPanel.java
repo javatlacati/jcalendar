@@ -34,6 +34,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -271,8 +272,10 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
     static public class TestDateVerifier implements DateVerifier {
 
         @Override
-        public boolean isInvalid(Calendar date) {
-            int year = date.get(Calendar.YEAR);
+        public boolean isInvalid(Date date) {
+            Calendar calendarDate = new GregorianCalendar();
+            calendarDate.setTime(date);
+            int year = calendarDate.get(Calendar.YEAR);
             if (year < 100) {
                 if (year < 50) {
                     year += 2000;
@@ -280,13 +283,13 @@ public class DateChooserPanel extends JPanel implements PropertyChangeListener {
                     year += 1900;
                 }
 
-                date.set(Calendar.YEAR, year);
+                calendarDate.set(Calendar.YEAR, year);
             }
 
-            if (date.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            if (calendarDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                 return true;
             }
-            return (date.get(Calendar.DAY_OF_MONTH) % 2) != 0;
+            return (calendarDate.get(Calendar.DAY_OF_MONTH) % 2) != 0;
         }
 
     }

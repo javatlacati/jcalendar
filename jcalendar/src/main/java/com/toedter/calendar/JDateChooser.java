@@ -677,7 +677,7 @@ public class JDateChooser extends JPanel implements ActionListener,
 
         calendar.setTime(newValue);
         long was = newValue.getTime();
-        if (!v.isInvalid(calendar)) {
+        if (!v.isInvalid(new Date(calendar.getTimeInMillis()))) {
             if (calendar.getTimeInMillis() != was) {
                 dateEditor.setDate(new Date(calendar.getTimeInMillis()));
             }
@@ -699,7 +699,7 @@ public class JDateChooser extends JPanel implements ActionListener,
             calendar.add(Calendar.DAY_OF_YEAR, direction);
             d.setTime(calendar.getTimeInMillis());
         } while (((direction == 1) ? d.before(limit) : d.after(limit))
-                && v.isInvalid(calendar));
+                && v.isInvalid(new Date(calendar.getTimeInMillis())));
         if ((direction == 1) ? d.after(limit) : d.before(limit)) {
             d.setTime(limit.getTime());
         }
@@ -757,7 +757,7 @@ public class JDateChooser extends JPanel implements ActionListener,
         }
 
         @Override
-        public boolean isInvalid(Calendar date) {
+        public boolean isInvalid(Date date) {
             return verifier.isInvalid(date);
         }
     }
