@@ -52,7 +52,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         FocusListener {
 
     private static final long serialVersionUID = 5876398337018781820L;
-    public static final int DAYS_IN_WEEK = 7;
+    private static final int DAYS_IN_WEEK = 7;
+    private static final int SATURDAY_INDEX = 5;
+    private static final int SUNDAY_INDEX = 6;
+    private static final int DAYS_SLOTS = 49;
 
     /* GUI Colors */
     protected Color sundayForeground;
@@ -184,16 +187,22 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
      * Initializes the locale specific names for the days of the week.
      */
     protected void init() {
-        JButton testButton = new JButton();
-        oldDayBackgroundColor = testButton.getBackground();
+        getOldDayColor();
         selectedColor = new Color(160, 160, 160);
-
-        Date date = calendar.getTime();
-        calendar = Calendar.getInstance(locale);
-        calendar.setTime(date);
-
+        setCalendarLocale();
         drawDayNames();
         drawDays();
+    }
+
+    private void getOldDayColor() {
+        final JButton testButton = new JButton();
+        oldDayBackgroundColor = testButton.getBackground();
+    }
+
+    private void setCalendarLocale() {
+        final Date date = calendar.getTime();
+        calendar = Calendar.getInstance(locale);
+        calendar.setTime(date);
     }
 
     /**
@@ -201,8 +210,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
      */
     private void drawDayNames() {
         int firstDayOfWeek = calendar.getFirstDayOfWeek();
-        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(locale);
-        dayNames = dateFormatSymbols.getShortWeekdays();
+        getDayNames();
 
         int aDay = firstDayOfWeek;
 
@@ -223,9 +231,14 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             if (aDay < 7) {
                 aDay++;
             } else {
-                aDay -= 6;
+                aDay -= SUNDAY_INDEX;
             }
         }
+    }
+
+    private void getDayNames() {
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(locale);
+        dayNames = dateFormatSymbols.getShortWeekdays();
     }
 
     /**
@@ -263,18 +276,23 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 
         hideDaysBeforeFirstDay(firstDay);
 
-        tmpCalendar.add(Calendar.MONTH, 1);
 
-        Date firstDayInNextMonth = tmpCalendar.getTime();
-        tmpCalendar.add(Calendar.MONTH, -1);
 
+
+        int daysOfMonth = getDaysOfMonth(tmpCalendar, minCal, maxCal, firstDay);
+        hideInvalidDays(daysOfMonth, firstDay);
+        drawWeeks();
+    }
+
+    private int getDaysOfMonth(Calendar tmpCalendar, Calendar minCal, Calendar maxCal, int firstDay) {
         Color foregroundColor = getForeground();
-        
+        Date firstDayInNextMonth = getFirstDayInNextMonth(tmpCalendar);
+
         Date aDay = tmpCalendar.getTime();
-        int n = 0;
+        int dayNumber = 0;
         while (aDay.before(firstDayInNextMonth)) {
-            JButton b = days[firstDay + n + 7];
-            b.setText(Integer.toString(n + 1));
+            JButton b = days[firstDay + dayNumber + 7];
+            b.setText(Integer.toString(dayNumber + 1));
             b.setVisible(true);
 
             if ((tmpCalendar.get(Calendar.DAY_OF_YEAR) == today
@@ -286,7 +304,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
                 b.setForeground(foregroundColor);
             }
 
-            if ((n + 1) == this.day) {
+            if ((dayNumber + 1) == this.day) {
                 assignSelectedDay(b, null);
 //				b.setBackground(selectedColor);
 //				selectedDay = b;
@@ -330,14 +348,18 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 //                }
 //            }
 
-            n++;
+            dayNumber++;
             tmpCalendar.add(Calendar.DATE, 1);
             aDay = tmpCalendar.getTime();
         }
+        return dayNumber;
+    }
 
-        hideInvalidDays(n, firstDay);
-
-        drawWeeks();
+    private Date getFirstDayInNextMonth(Calendar tmpCalendar) {
+        tmpCalendar.add(Calendar.MONTH, 1);
+        Date firstDayInNextMonth = tmpCalendar.getTime();
+        tmpCalendar.add(Calendar.MONTH, -1);
+        return firstDayInNextMonth;
     }
 
     private void hideDaysBeforeFirstDay(int firstDay) {
@@ -347,10 +369,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         }
     }
 
-    private void hideInvalidDays(int n, int firstDay) {
-        for (int k = n + firstDay + 7; k < 49; k++) {
-            days[k].setVisible(false);
-            days[k].setText("");
+    private void hideInvalidDays(int daysOfMonth, int firstDay) {
+        for (int dayNumber = daysOfMonth + firstDay + 7; dayNumber < DAYS_SLOTS; dayNumber++) {
+            days[dayNumber].setVisible(false);
+            days[dayNumber].setText("");
         }
     }
 
@@ -358,10 +380,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
      * Hides and shows the week buttons.
      */
     protected void drawWeeks() {
-        Calendar tmpCalendar = (Calendar) calendar.clone();
+        final Calendar tmpCalendar = (Calendar) calendar.clone();
 
         for (int i = 1; i < DAYS_IN_WEEK; i++) {
-            tmpCalendar.set(Calendar.DAY_OF_MONTH, (i * DAYS_IN_WEEK) - 6);
+            tmpCalendar.set(Calendar.DAY_OF_MONTH, (i * DAYS_IN_WEEK) - SUNDAY_INDEX);
 
             int week = tmpCalendar.get(Calendar.WEEK_OF_YEAR);
             StringBuilder buttonText = new StringBuilder(Integer.toString(week));
@@ -372,19 +394,19 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 
             weeks[i].setText(buttonText.toString());
 
-            if ((i == 5) || (i == 6)) {
+            if ((i == SATURDAY_INDEX) || (i == SUNDAY_INDEX)) {
                 weeks[i].setVisible(days[i * DAYS_IN_WEEK].isVisible());
             }
         }
     }
 
     private void fillDayPanel() {
-        days = new JButton[49];
+        days = new JButton[DAYS_SLOTS];
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 7; x++) {
                 int index = x + (7 * y);
 
-                if (y == 0) {
+                if (0 == y) {
                     days[index] = new DecoratorButton(decorationBackgroundColor, decorationBackgroundVisible, decorationBordersVisible, sundayForeground);
                 } else {
                     days[index] = new JButton("x") {
@@ -424,7 +446,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
             weeks[i].setFocusPainted(false);
             weeks[i].setForeground(new Color(100, 100, 100));
 
-            if (i != 0) {
+            if (0 != i) {
                 weeks[i].setText("0" + (i + 1));
             }
 
@@ -475,7 +497,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 //			selectedDay.setBackground(oldDayBackgroundColor);
 //			selectedDay.repaint();
 //		}
-        for (int i = 7; i < 49; i++) {
+        for (int i = 7; i < DAYS_SLOTS; i++) {
             if (days[i].getText().equals(Integer.toString(day))) {
                 assignSelectedDay(days[i], null);
                 break;
@@ -621,7 +643,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
      * Initializes both day names and weeks of the year.
      */
     protected void initDecorations() {
-        for (int x = 0; x < DAYS_IN_WEEK; x++) {
+        for (int x = 0; x < 7; x++) {
             days[x].setContentAreaFilled(decorationBackgroundVisible);
             days[x].setBorderPainted(decorationBordersVisible);
             days[x].invalidate();
@@ -692,13 +714,13 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     @Override
     public void setFont(Font font) {
         if (days != null) {
-            for (int i = 0; i < 49; i++) {
-                days[i].setFont(font);
+            for (int dayNumber = 0; dayNumber < DAYS_SLOTS; dayNumber++) {
+                days[dayNumber].setFont(font);
             }
         }
         if (weeks != null) {
-            for (int i = 0; i < 7; i++) {
-                weeks[i].setFont(font);
+            for (int weekNumber = 0; weekNumber < 7; weekNumber++) {
+                weeks[weekNumber].setFont(font);
             }
         }
     }
@@ -713,8 +735,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         super.setForeground(foreground);
 
         if (days != null) {
-            for (int i = 7; i < 49; i++) {
-                days[i].setForeground(foreground);
+            for (int dayNumber = 7; dayNumber < DAYS_SLOTS; dayNumber++) {
+                days[dayNumber].setForeground(foreground);
             }
 
             drawDays();
@@ -804,8 +826,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
         this.decorationBackgroundColor = decorationBackgroundColor;
 
         if (days != null) {
-            for (int i = 0; i < DAYS_IN_WEEK; i++) {
-                days[i].setBackground(decorationBackgroundColor);
+            for (int dayNumber = 0; dayNumber < DAYS_IN_WEEK; dayNumber++) {
+                days[dayNumber].setBackground(decorationBackgroundColor);
             }
         }
 
@@ -917,7 +939,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
     public void setDayBordersVisible(boolean dayBordersVisible) {
         this.dayBordersVisible = dayBordersVisible;
         if (initialized) {
-            for (int x = 7; x < 49; x++) {
+            for (int x = 7; x < DAYS_SLOTS; x++) {
                 if ("Windows".equals(UIManager.getLookAndFeel().getID())) {
                     days[x].setContentAreaFilled(dayBordersVisible);
                 } else {
