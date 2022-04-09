@@ -25,7 +25,6 @@ This is a fork of the JCalendar project:
 Luis Miranda:
 
 * uses Maven 2
-
 * supports TimeZones
 
 Tom Sanders
@@ -36,7 +35,7 @@ USAGE
 --
 
 ### Luis Miranda
-- The JDateChooser class has a new method called setDateFormatCalendar.
+* The JDateChooser class has a new method called setDateFormatCalendar.
   The underlying implementation will use the TimeZone of the selected
   calendar when displaying the date and time.
 
@@ -44,7 +43,7 @@ USAGE
 
 Components
 
-- The dateVerifier property
+* The dateVerifier property
   As well as the existing min/maxSelectableDate properties, the
   DateVerifier interface allows clients to specify arbitrary
   validation checks, for example valid business days. When present
@@ -55,16 +54,16 @@ Components
   invalid dates are skipped in the direction of travel. The same is
   true for values entered as text.
 
-- The nullText property
+* The nullText property
   Sometimes it is nice to display some text in JDateChooser, rather
   than blank, when the date is null. For example null might
   mean "Open Ended" or whatever.
 
-- The selectOnFocus property
+* The selectOnFocus property
   When a JDateChooser (that is the underlying JTextComponent) gains
   the focus, optionally select its text. Useful for keyboard junkies.
 
-- Using a mnemonic is limited in that it does not require the
+* Using a mnemonic is limited in that it does not require the
    component to have the focus. If there is more than one JDateChooser
    in your window Alt+C will only ever apply to the one most
    recently created. Changed to use the input/action map.
@@ -72,23 +71,23 @@ Components
    When focused in the underlying JTextComponent Ctrl-C pops up the
    calendar and Ctrl-N sets the value to null.
 
-- IDateEditor exposes the underlying DateFormat so it can be
+* IDateEditor exposes the underlying DateFormat so it can be
   manipulated (for example setting a time zone)
 
-- IDateEditor provides a method to retrieve the underlying
+* IDateEditor provides a method to retrieve the underlying
   JTextComponent.
 
 Test Program
 
-- New properties added so they can be exercised. The DateVerifier
+* New properties added so they can be exercised. The DateVerifier
   example excludes Mondays and otherwise includes only even numbered
   dates.
 
-- For JDateChooser add a check box that sets the top four choosers
+* For JDateChooser add a check box that sets the top four choosers
   to null when checked, today when not. Set them to null
   individually using ctrl-n when they have the focus.
 
-- Set the nullText using the text field (requires cr).
+* Set the nullText using the text field (requires cr).
 
 Backwards compatible with 1.3.3 with the exception of keyboard
 behaviour.
