@@ -76,11 +76,7 @@ public class DecoratorButton extends JButton {
                 g.setColor(sundayForeground);
             }
             g.fillRect(0, 0, getWidth(), getHeight());
-            if (isBorderPainted()) {
-                setContentAreaFilled(true);
-            } else {
-                setContentAreaFilled(false);
-            }
+            setContentAreaFilled(isBorderPainted());
         }
         super.paint(g);
     }

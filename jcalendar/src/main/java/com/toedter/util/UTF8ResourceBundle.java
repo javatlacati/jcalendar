@@ -51,7 +51,7 @@ public abstract class UTF8ResourceBundle {
         }
 
         @Override
-        public Enumeration getKeys() {
+        public Enumeration<String> getKeys() {
             return propertyResourceBundle.getKeys();
         }
 

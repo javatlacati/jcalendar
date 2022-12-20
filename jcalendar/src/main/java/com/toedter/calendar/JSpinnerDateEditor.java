@@ -294,8 +294,7 @@ public class JSpinnerDateEditor extends JSpinner implements IDateEditor,
     }
 
     /**
-     * @see
-     * com.toedter.calendar.IDateEditor#setMaxSelectableDate(java.util.Date)
+     * @see com.toedter.calendar.IDateEditor#setMaxSelectableDate(java.util.Date)
      */
     @Override
     public void setMaxSelectableDate(Date max) {
@@ -309,8 +308,7 @@ public class JSpinnerDateEditor extends JSpinner implements IDateEditor,
     }
 
     /**
-     * @see
-     * com.toedter.calendar.IDateEditor#setMinSelectableDate(java.util.Date)
+     * @see com.toedter.calendar.IDateEditor#setMinSelectableDate(java.util.Date)
      */
     @Override
     public void setMinSelectableDate(Date min) {
@@ -324,8 +322,7 @@ public class JSpinnerDateEditor extends JSpinner implements IDateEditor,
     }
 
     /**
-     * @see
-     * com.toedter.calendar.IDateEditor#setSelectableDateRange(java.util.Date,
+     * @see com.toedter.calendar.IDateEditor#setSelectableDateRange(java.util.Date,
      * java.util.Date)
      */
     @Override
@@ -367,8 +364,7 @@ public class JSpinnerDateEditor extends JSpinner implements IDateEditor,
     }
 
     /**
-     * @see
-     * javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+     * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
      */
     @Override
     public void stateChanged(ChangeEvent e) {

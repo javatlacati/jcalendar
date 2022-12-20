@@ -52,10 +52,6 @@ public class JCalendarTheme extends DefaultMetalTheme {
         return "JCalendar Theme";
     }
 
-    protected Font getFont() {
-        return new Font("Dialog", Font.PLAIN, 12);
-    }
-
     @Override
     public FontUIResource getSystemTextFont() {
         return standardFont;

@@ -84,13 +84,7 @@ public class JSpinField extends JPanel implements ChangeListener, CaretListener,
     public JSpinField(int min, int max) {
         super();
         this.min = min;
-        int trueMax;
-        if (max < min) {
-            trueMax = min;
-        } else {
-            trueMax = max;
-        }
-        this.max = trueMax;
+        this.max = Math.max(max, min);
         if (value < min) {
             value = min;
         }
@@ -171,10 +165,8 @@ public class JSpinField extends JPanel implements ChangeListener, CaretListener,
         int oldValue = value;
         if (newValue < min) {
             value = min;
-        } else if (newValue > max) {
-            value = max;
         } else {
-            value = newValue;
+            value = Math.min(newValue, max);
         }
 
         if (updateTextField) {
@@ -290,7 +282,7 @@ public class JSpinField extends JPanel implements ChangeListener, CaretListener,
     @Override
     public void caretUpdate(CaretEvent e) {
         try {
-            int testValue = Integer.valueOf(textField.getText());
+            int testValue = Integer.parseInt(textField.getText());
 
             if ((testValue >= min) && (testValue <= max)) {
                 textField.setForeground(darkGreen);
@@ -317,7 +309,7 @@ public class JSpinField extends JPanel implements ChangeListener, CaretListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (textField.getForeground().equals(darkGreen)) {
-            setValue(Integer.valueOf(textField.getText()));
+            setValue(Integer.parseInt(textField.getText()));
         }
     }
 
