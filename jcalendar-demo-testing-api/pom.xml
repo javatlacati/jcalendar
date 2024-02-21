@@ -45,7 +45,7 @@
             <groupId>org.netbeans.external</groupId>
             <artifactId>jemmy-2.3.1.1</artifactId>
             <scope>compile</scope>
-            <version>RELEASE200</version>
+            <version>RELEASE210</version>
         </dependency>
         <dependency>
             <groupId>com.github.javatlacati</groupId>
