@@ -16,7 +16,7 @@ build_script:
 test_script:
   - mvn verify -B -Dmaven.javadoc.skip=true -Djacoco.skip=true -ntp
 
-for:
+#for:
 #-
 #    matrix:
 #      only:
@@ -34,13 +34,13 @@ for:
 #        - export PATH=$M2_HOME:$PATH
 #        - export PATH=$JAVA_HOME:$PATH
 #-
+#    matrix:
+#      only:
+#      - image: Visual Studio 2019
+cache:
+  - '%USERPROFILE%\.m2'
+
+
+environment:
     matrix:
-      only:
-      - image: Visual Studio 2019
-    cache:
-      - '%USERPROFILE%\.m2'
-
-
-    environment:
-        matrix:
-            - JAVA_HOME: /Program Files/Java/jdk1.8.0
+        - JAVA_HOME: /Program Files/Java/jdk1.8.0
