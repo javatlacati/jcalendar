@@ -24,6 +24,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,9 +37,12 @@ public class GUITest {
 
     private static final int COMPONENTS_TO_TEST = 7;
     private JCalendarDemo jCalendarDemo;
+    private final Locale englishLocale = Locale.US;
 
     @BeforeEach
     public void setUp() throws Exception {
+        System.out.println("Setting up English locale");
+        Locale.setDefault(englishLocale);
         jCalendarDemo = new JCalendarDemo("JCalendar Demo");
         jCalendarDemo.pack();
         jCalendarDemo.setResizable(true);

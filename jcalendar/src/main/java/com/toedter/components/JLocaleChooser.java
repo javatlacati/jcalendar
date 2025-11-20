@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -59,19 +60,18 @@ public class JLocaleChooser extends JComboBox<String> implements ItemListener {
         initLocales();
     }
 
-    private void initLocales() {
-        addItemListener(this);
-        locales = Calendar.getAvailableLocales();
-        localeCount = locales.length;
+  private void initLocales() {
+    addItemListener(this);
+    locales = Calendar.getAvailableLocales();
+    localeCount = locales.length;
 
-        for (int i = 0; i < localeCount; i++) {
-            if (!locales[i].getCountry().isEmpty()) {
-                addItem(locales[i].getDisplayName());
-            }
-        }
+    Arrays.stream(locales)
+        .filter(locale -> !locale.getCountry().isEmpty())
+        .map(Locale::getDisplayName)
+        .forEach(this::addItem);
 
-        setLocale(Locale.getDefault());
-    }
+    setLocale(Locale.getDefault());
+  }
 
     /**
      * Returns "JLocaleChoose".
@@ -83,23 +83,19 @@ public class JLocaleChooser extends JComboBox<String> implements ItemListener {
         return "JLocaleChoose";
     }
 
-    /**
-     * The ItemListener for the locales.
-     *
-     * @param iEvt event from the item
-     */
-    @Override
-    public void itemStateChanged(ItemEvent iEvt) {
-        String item = (String) iEvt.getItem();
-        int i;
-
-        for (i = 0; i < localeCount; i++) {
-            if (locales[i].getDisplayName().equals(item)) {
-                break;
-            }
-        }
-        setLocale(locales[i], false);
-    }
+  /**
+   * The ItemListener for the locales.
+   *
+   * @param iEvt event from the item
+   */
+  @Override
+  public void itemStateChanged(ItemEvent iEvt) {
+    String item = (String) iEvt.getItem();
+    Arrays.stream(locales)
+        .filter(locale -> locale.getDisplayName().equals(item))
+        .findFirst()
+        .ifPresent(l -> setLocale(l, iEvt.getStateChange() == ItemEvent.SELECTED));
+  }
 
     /**
      * Sets the locale.

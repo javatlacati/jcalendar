@@ -35,13 +35,16 @@ public class JLocaleChooserTest {
     private JLocaleChooser jLocaleChooser;
     private JFrame frame;
     private JLocaleChooserPageObject pageObject;
+    private final Locale englishLocale = Locale.US;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        System.out.println("creating JFrame");
-        frame = new JFrame("AJFrame");
-        frame.setLayout(new BorderLayout());
-    }
+  @BeforeEach
+  public void setUp() throws Exception {
+    System.out.println("Setting up English locale");
+    Locale.setDefault(englishLocale);
+    System.out.println("creating JFrame");
+    frame = new JFrame("AJFrame");
+    frame.setLayout(new BorderLayout());
+  }
 
     @AfterEach
     public void tearDown() {
@@ -62,11 +65,11 @@ public class JLocaleChooserTest {
     public void valueShouldBeDefault() {
         jLocaleChooser = new JLocaleChooser();
         secondSetup();
-        try {
-            Thread.sleep(1000 * 2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assertEquals(Locale.getDefault().getDisplayName(), pageObject.getValue());
+//        try {
+//            Thread.sleep(1000 * 12);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        assertEquals(englishLocale.getDisplayName(), pageObject.getValue());
     }
 }
