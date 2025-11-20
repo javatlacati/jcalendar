@@ -62,9 +62,8 @@ public class GUITest {
 
         demoPageObject.clickAboutMenu();
         String version = "1.3.9";
-        String aboutText = new StringBuilder("Version ")
-                .append(version)
-                .toString();
+        String aboutText = "Version " +
+                version;
         assertThat(demoPageObject.aboutMenuText(), CoreMatchers.containsString(aboutText));
 
         demoPageObject.closeAboutMenu();
