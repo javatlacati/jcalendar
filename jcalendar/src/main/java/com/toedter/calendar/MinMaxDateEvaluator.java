@@ -26,7 +26,7 @@ import java.util.Date;
  * @author RuslanLopez
  */
 public class MinMaxDateEvaluator implements IDateEvaluator{
-    private DateUtil dateUtil = new DateUtil();
+    private final DateUtil dateUtil = new DateUtil();
 
     @Override
     public boolean isSpecial(Date date) {

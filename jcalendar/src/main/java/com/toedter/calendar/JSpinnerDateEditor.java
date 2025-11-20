@@ -239,7 +239,7 @@ public class JSpinnerDateEditor extends JSpinner implements IDateEditor,
     public void focusLost(FocusEvent focusEvent) {
         String text = ((DefaultEditor) getEditor()).getTextField()
                 .getText();
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             setDate(null);
         } else {
             checkText(text);

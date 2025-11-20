@@ -844,7 +844,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param todayButtonText the new text
      */
     public void setTodayButtonText(String todayButtonText) {
-        if (todayButtonText != null && todayButtonText.trim().length() == 0) {
+        if (todayButtonText != null && todayButtonText.trim().isEmpty()) {
             this.todayButtonText = null;
         } else {
             this.todayButtonText = todayButtonText;
@@ -866,7 +866,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      */
     public void setNullDateButtonText(String nullDateButtonText) {
         if (nullDateButtonText != null
-                && nullDateButtonText.trim().length() == 0) {
+                && nullDateButtonText.trim().isEmpty()) {
             this.nullDateButtonText = null;
         } else {
             this.nullDateButtonText = nullDateButtonText;

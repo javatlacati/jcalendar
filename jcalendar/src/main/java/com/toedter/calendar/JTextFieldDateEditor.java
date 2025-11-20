@@ -286,7 +286,7 @@ public class JTextFieldDateEditor extends JFormattedTextField implements IDateEd
         String text = getText().trim();
         String emptyMask = maskPattern.replace('#', placeholder);
 
-        if (text.length() == 0 || text.equals(emptyMask)) {
+        if (text.isEmpty() || text.equals(emptyMask)) {
             setForeground(Color.BLACK);
             return;
         }
@@ -313,7 +313,7 @@ public class JTextFieldDateEditor extends JFormattedTextField implements IDateEd
     @Override
     public void focusLost(FocusEvent focusEvent) {
         String text = getText();
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             setDate(null);
         } else {
             checkText();
