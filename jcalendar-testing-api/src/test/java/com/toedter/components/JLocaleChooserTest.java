@@ -62,6 +62,11 @@ public class JLocaleChooserTest {
     public void valueShouldBeDefault() {
         jLocaleChooser = new JLocaleChooser();
         secondSetup();
+        try {
+            Thread.sleep(1000 * 2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         assertEquals(Locale.getDefault().getDisplayName(), pageObject.getValue());
     }
 }
