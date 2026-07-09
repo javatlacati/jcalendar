@@ -12,7 +12,7 @@
     <scm>
         <connection>scm:git:git://github.com/javatlacati/jcalendar.git</connection>
         <developerConnection>scm:git:git://github.com/javatlacati/jcalendar.git</developerConnection>
-        <url>http://github.com/javatlacati/jcalendar.git</url>
+        <url>https://github.com/javatlacati/jcalendar.git</url>
     </scm>
 
     <distributionManagement>
