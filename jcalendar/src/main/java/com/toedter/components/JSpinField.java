@@ -78,8 +78,8 @@ public class JSpinField extends JPanel implements ChangeListener, CaretListener,
      * JSpinField constructor with given minimum and maximum vaues and initial
      * value 0.
      *
-     * @param min
-     * @param max
+     * @param min minimum value
+     * @param max maximum value
      */
     public JSpinField(int min, int max) {
         super();
