@@ -1,7 +1,7 @@
 # enviroment settings
 
 image:
-  - Visual Studio 2019
+  - Visual Studio 2022
 #  - macOS
 
 # install required tools (maven, secure-file, encrypted files)
@@ -43,4 +43,4 @@ cache:
 
 environment:
     matrix:
-        - JAVA_HOME: /Program Files/Java/jdk11
+        - JAVA_HOME: /Program Files/Java/jdk15
