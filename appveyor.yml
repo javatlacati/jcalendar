@@ -43,4 +43,4 @@ cache:
 
 environment:
     matrix:
-        - JAVA_HOME: /Program Files/Java/jdk1.8.0
+        - JAVA_HOME: /Program Files/Java/jdk11
